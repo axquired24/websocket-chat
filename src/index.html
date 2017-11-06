@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #messages li.bg-green { background: #caffc6; }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <!-- Js module -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    $(function() {
+        var socket = io();
+        var username = isValidUsername();
+        $('#messages').append($('<li>').text('Welcome: ' + username));
+        // Broadcast user join
+        socket.emit('user-join', username);
+
+        $('form').submit(function(e) {
+          e.preventDefault();
+          var mval = $('#m').val();
+          msgperson = {
+            'username': username,
+            'msg': mval
+          };
+          socket.emit('chat-msg', msgperson);
+          $('#messages').append($('<li class="bg-green">').text('You: ' + mval));
+          $('#m').val('');
+          // append message, add class to indicate this message from he
+          return false;
+        })
+
+        // Listen on chat-msg
+        socket.on('chat-msg', function(msgperson) {
+          var msgtext = msgperson.username + ': ' + msgperson.msg;
+          // Append on this file
+          $('#messages').append($('<li>').text(msgtext));
+        });
+
+        // listen on new user conn
+        socket.on('user-join', function(msg) {
+          $('#messages').append($('<li>').text(msg));
+        });
+
+        // socket.on('user-disconn', function(msg) {
+        //   $('#messages').append($('<li>').text(msg));
+        // });
+    });
+
+    function isValidUsername(username='') {
+      if(username === undefined || username == '') {
+        username   = prompt("Nama kamu?");
+        isValidUsername(username);
+      }
+      return username;
+    }
+    </script>
+  </body>
+</html>
