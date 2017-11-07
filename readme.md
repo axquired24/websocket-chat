@@ -1,6 +1,6 @@
 ### Websocket with Nodejs
 ---------
 ##### How to
-- npm install
-- node index.js
-- open localhost:3000
+- ``$ npm install``
+- ``$ node index.js``
+- open http://localhost:3000
