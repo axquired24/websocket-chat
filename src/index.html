@@ -63,9 +63,9 @@
     });
 
     function isValidUsername(username='') {
-      if(username === undefined || username == '') {
-        username   = prompt("Nama kamu?");
-        isValidUsername(username);
+      if(username.length < 2) {
+        username   = prompt("Nama kamu? (Min 2 karakter)");
+        return isValidUsername(username);
       }
       return username;
     }
