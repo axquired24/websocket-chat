@@ -12,6 +12,8 @@
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
       #messages li.bg-green { background: #caffc6; }
+      #messages li.bg-red { background: #ffd6de; }
+      #messages li.bg-yellow { background: #f7f1d4; }
     </style>
   </head>
   <body>
@@ -39,7 +41,7 @@
             'msg': mval
           };
           socket.emit('chat-msg', msgperson);
-          $('#messages').append($('<li class="bg-green">').text('You: ' + mval));
+          $('#messages').append($('<li>').text('You: ' + mval));
           $('#m').val('');
           // append message, add class to indicate this message from he
           return false;
@@ -49,17 +51,18 @@
         socket.on('chat-msg', function(msgperson) {
           var msgtext = msgperson.username + ': ' + msgperson.msg;
           // Append on this file
-          $('#messages').append($('<li>').text(msgtext));
+          $('#messages').append($('<li class="bg-green">').text(msgtext));
         });
 
         // listen on new user conn
         socket.on('user-join', function(msg) {
-          $('#messages').append($('<li>').text(msg));
+          $('#messages').append($('<li class="bg-yellow">').text(msg));
         });
 
-        // socket.on('user-disconn', function(msg) {
-        //   $('#messages').append($('<li>').text(msg));
-        // });
+        // listen on user disconnected
+        socket.on('user-disconn', function(msg) {
+          $('#messages').append($('<li class="bg-red">').text(msg));
+        });
     });
 
     function isValidUsername(username='') {
